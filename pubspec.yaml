@@ -9,5 +9,6 @@ dependencies:
     path: ../Bay
   http_server: any
   logging: any
+  uri: any
 dev_dependencies:
   unittest: '>=0.9.3'

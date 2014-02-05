@@ -6,7 +6,7 @@ import 'package:bay_static/bay_static.dart';
 import 'package:logging/logging.dart';
 
 void main () {
-  Bay.init([new BayStaticModule("static")], port: 8080);
+  Bay.init([new BayStaticModule(rootDirectory: "static", path: "/static")], port: 8080);
   
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
