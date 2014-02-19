@@ -31,32 +31,17 @@ class BayStaticRequestHandler extends RequestHandler {
     _pathPattern = new UriParser(new UriTemplate(path)) {
     
     _virtualDirectory..allowDirectoryListing = true
-                     ..directoryHandler = directoryHandler
-                     ..errorPageHandler = errorPageHandler;
-  }
-  
-  directoryHandler(Directory dir, HttpRequest request) {
-    var filePath = resolveFile(request);
-    _virtualDirectory.serveFile(new File(filePath), request);
-  }
-  
-  errorPageHandler(HttpRequest request) {
-    var filePath = resolveFile(request);
-    _virtualDirectory.serveFile(new File(filePath), request);
+                     ..followLinks = true
+                     ..jailRoot = true;
   }
   
   bool accepts(HttpRequest request) => resolveFile(request) != null;
   
   Future<HttpRequest> handle(HttpRequest request) {
-    var completer = new Completer<HttpRequest>();
+    var filePath = resolveFile(request);
+    _virtualDirectory.serveFile(new File(filePath), request);
     
-    _virtualDirectory.serveRequest(request);
-    request.response.done.then(
-        (_) => completer.complete(request),
-        onError: (error, stackTrace) => 
-            completer.completeError(error));
-    
-    return completer.future;
+    return request.response.done.then((_) => request);
   }
   
   String resolveFile(HttpRequest request) {
